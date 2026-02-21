@@ -20,7 +20,7 @@ export default function SplashScreen() {
         <View style={styles.container}>
             {/* Placeholder Logo */}
             <View style={styles.logoContainer}>
-                <Text style={styles.logoText}>OrderIn</Text>
+                <Text style={styles.logoText}>Meal Mate</Text>
             </View>
             <Text style={styles.tagline}>Daily Meals. On Schedule.</Text>
         </View>

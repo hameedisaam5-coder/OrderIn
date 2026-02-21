@@ -17,7 +17,7 @@ export default function WelcomeScreen() {
                     <View style={styles.logoCircle}>
                         <Text style={styles.logoText}>O</Text>
                     </View>
-                    <Text style={styles.title}>OrderIn</Text>
+                    <Text style={styles.title}>Meal Mate</Text>
                     <Text style={styles.subtitle}>Daily Meals. On Schedule.</Text>
                 </View>
 

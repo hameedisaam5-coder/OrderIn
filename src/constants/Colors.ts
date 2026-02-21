@@ -1,5 +1,5 @@
 /**
- * OrderIn Vibrant Color Palette
+ * Meal Mate Vibrant Color Palette
  * Theme: "Modern Fresh" - High saturation, playful yet professional.
  */
 export const Colors = {
