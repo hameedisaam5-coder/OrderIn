@@ -18,10 +18,7 @@ export default function SplashScreen() {
 
     return (
         <View style={styles.container}>
-            {/* Placeholder Logo */}
-            <View style={styles.logoContainer}>
-                <Text style={styles.logoText}>Meal Mate</Text>
-            </View>
+            <Image source={require('../assets/logo.png')} style={styles.logoImage} resizeMode="contain" />
             <Text style={styles.tagline}>Daily Meals. On Schedule.</Text>
         </View>
     );
@@ -34,22 +31,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    logoContainer: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        backgroundColor: Colors.surface,
-        alignItems: 'center',
-        justifyContent: 'center',
+    logoImage: {
+        width: 150,
+        height: 150,
         marginBottom: Layout.spacing.lg,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.30,
-        shadowRadius: 4.65,
-        elevation: 8,
     },
     logoText: {
         color: Colors.primary,

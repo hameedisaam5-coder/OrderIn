@@ -7,8 +7,11 @@ import Input from '../../src/components/Input';
 import Colors from '../../src/constants/Colors';
 import Layout from '../../src/constants/Layout';
 
+import { useAppMode } from '../../src/context/AppModeContext';
+
 export default function OtpScreen() {
     const router = useRouter();
+    const { isSellerMode } = useAppMode();
     const [otp, setOtp] = useState('');
     const [loading, setLoading] = useState(false);
     const [timer, setTimer] = useState(30);
@@ -24,9 +27,17 @@ export default function OtpScreen() {
         setLoading(true);
         // Simulate verification
         setTimeout(() => {
-            setLoading(false);
-            // Navigate to Home (Tab Navigator)
-            router.replace('/(tabs)/home');
+            try {
+                setLoading(false);
+                if (isSellerMode) {
+                    router.replace('/(seller)');
+                } else {
+                    router.replace('/(tabs)/home');
+                }
+            } catch (error) {
+                setLoading(false);
+                console.error("Navigation error:", error);
+            }
         }, 1500);
     };
 

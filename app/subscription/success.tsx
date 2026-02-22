@@ -10,7 +10,7 @@ import { useSubscription } from '../../src/context/SubscriptionContext';
 
 export default function SubscriptionSuccessScreen() {
     const router = useRouter();
-    const { completeSubscription } = useSubscription();
+    const { state, completeSubscription } = useSubscription();
 
     useEffect(() => {
         // Clear wizard state on unmount if we wanted, but we'll clear it on button press
@@ -38,6 +38,21 @@ export default function SubscriptionSuccessScreen() {
                     <Text style={styles.cardTitle}>Starts Tomorrow</Text>
                     <Text style={styles.cardText}>First meal: Lunch</Text>
                     <Text style={styles.cardText}>Delivering to: Office</Text>
+
+                    {/* Customizations Section */}
+                    {state.customization?.base ? (
+                        <View style={styles.customContainer}>
+                            <Text style={styles.customTitle}>Your Customizations:</Text>
+                            <Text style={styles.cardText}>• Base: {state.customization.base}</Text>
+                            <Text style={styles.cardText}>• Portion: {state.customization.portion}</Text>
+                            {state.customization.addons.length > 0 && (
+                                <Text style={styles.cardText}>• Add-ons: {state.customization.addons.length} selected</Text>
+                            )}
+                            {state.customization.instructions ? (
+                                <Text style={styles.cardText} numberOfLines={2}>• Note: "{state.customization.instructions}"</Text>
+                            ) : null}
+                        </View>
+                    ) : null}
                 </View>
             </View>
 
@@ -112,6 +127,19 @@ const styles = StyleSheet.create({
     cardText: {
         color: Colors.textSecondary,
         marginBottom: 4,
+    },
+    customContainer: {
+        marginTop: 12,
+        paddingTop: 12,
+        borderTopWidth: 1,
+        borderTopColor: Colors.border,
+        width: '100%',
+    },
+    customTitle: {
+        fontWeight: 'bold',
+        color: Colors.textPrimary,
+        marginBottom: 4,
+        fontSize: 14,
     },
     footer: {
         paddingHorizontal: Layout.spacing.lg,

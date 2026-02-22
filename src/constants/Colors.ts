@@ -3,8 +3,8 @@
  * Theme: "Modern Fresh" - High saturation, playful yet professional.
  */
 export const Colors = {
-  primary: '#7B2CBF', // Deep Vibrant Violet/Purple (Central Theme)
-  primaryLight: '#9D4EDD', // Lighter purple for gradients
+  primary: '#702FB2', // Deep Vibrant Violet/Purple (Central Theme)
+  primaryLight: '#702FB2', // Flat purple to match logo background seamlessly
   accent: '#2ED573', // Emerald Green - Freshness & Success
   background: '#F1F2F6', // Anti-flash White - Clean, modern gray-ish white
   surface: '#FFFFFF',

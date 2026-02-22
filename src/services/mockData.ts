@@ -1,4 +1,4 @@
-import { User, Meal, Kitchen, Order, SubscriptionPlan } from '../types';
+import { Kitchen, Meal, User, Order, SubscriptionPlan } from '../models/types';
 
 // Mock User
 export const MOCK_USER: User = {
@@ -7,6 +7,20 @@ export const MOCK_USER: User = {
     email: 'hameed@example.com',
     phone: '+91 9876543210',
     role: 'user',
+    addresses: [
+        {
+            id: 'a1',
+            label: 'Home',
+            fullAddress: 'No 42, Silicon Valley, Koramangala, Bangalore',
+            coordinates: { latitude: 12.9352, longitude: 77.6245 }
+        },
+        {
+            id: 'a2',
+            label: 'Office',
+            fullAddress: 'Tech Park, Whitefield, Bangalore',
+            coordinates: { latitude: 12.9698, longitude: 77.7499 }
+        }
+    ]
 };
 
 // ─── Mock Meals (3–5 per restaurant) ───────────────────────────────────────────
@@ -111,12 +125,54 @@ const meals: Meal[] = [
     { id: 'm22d', kitchenId: 'k22', name: 'Granola Parfait', description: 'Greek yogurt, house granola, seasonal berries', price: 140, image: 'https://images.unsplash.com/photo-1546039907-7fa24a6b3cce?w=500&fit=crop&q=60', type: 'Breakfast', isVegetarian: true },
 
     // Subscription kitchens
-    { id: 'm_sub1', kitchenId: 's1', name: 'North Indian Tiffin', description: 'Dal, Rice, 2 Rotis, Seasonal Sabzi – daily fresh', price: 120, image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&fit=crop&q=60', type: 'Lunch', isVegetarian: true, isSubscription: true },
-    { id: 'm_sub2', kitchenId: 's2', name: 'Pure Veg Thali', description: 'Wholesome vegetarian thali – subscription only', price: 99, image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&fit=crop&q=60', type: 'Lunch', isVegetarian: true, isSubscription: true },
-    { id: 'm_sub3', kitchenId: 's3', name: 'Fit Salad Bowl', description: 'Calorie-counted salad with protein boost', price: 149, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&fit=crop&q=60', type: 'Lunch', isVegetarian: true, isSubscription: true },
-    { id: 'm_sub4', kitchenId: 's4', name: 'South Indian Tiffin', description: 'Idli/Dosa rotation with sambar and chutney', price: 99, image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&fit=crop&q=60', type: 'Breakfast', isVegetarian: true, isSubscription: true },
-    { id: 'm_sub5', kitchenId: 's5', name: 'Daily Bakery Box', description: 'Freshly baked pastries delivered every morning', price: 179, image: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&fit=crop&q=60', type: 'Breakfast', isVegetarian: true, isSubscription: true },
-    { id: 'm_sub7', kitchenId: 's7', name: 'Protein Power Meal', description: 'High-protein balanced meal for fitness goals', price: 249, image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&fit=crop&q=60', type: 'Lunch', isVegetarian: false, isSubscription: true },
+    {
+        id: 'm_sub1', kitchenId: 's1', name: 'North Indian Tiffin', description: 'Dal, Rice, 2 Rotis, Seasonal Sabzi – daily fresh', price: 120, image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&fit=crop&q=60', type: 'Lunch', isVegetarian: true, isSubscription: true,
+        customizationOptions: {
+            bases: ['White Rice', 'Brown Rice', 'Roti', 'Chapati'],
+            portions: ['Regular', 'Large', 'Slim'],
+            addons: [{ id: 'a1', name: 'Extra Paneer', price: 40 }, { id: 'a2', name: 'Curd', price: 20 }, { id: 'a3', name: 'Salad', price: 15 }]
+        }
+    },
+    {
+        id: 'm_sub2', kitchenId: 's2', name: 'Pure Veg Thali', description: 'Wholesome vegetarian thali – subscription only', price: 99, image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&fit=crop&q=60', type: 'Lunch', isVegetarian: true, isSubscription: true,
+        customizationOptions: {
+            bases: ['White Rice', 'Brown Rice', 'Puri'],
+            portions: ['Regular', 'Large'],
+            addons: [{ id: 'a1', name: 'Extra Sweet', price: 30 }, { id: 'a2', name: 'Papad', price: 5 }]
+        }
+    },
+    {
+        id: 'm_sub3', kitchenId: 's3', name: 'Fit Salad Bowl', description: 'Calorie-counted salad with protein boost', price: 149, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&fit=crop&q=60', type: 'Lunch', isVegetarian: true, isSubscription: true,
+        customizationOptions: {
+            bases: ['Quinoa', 'Mixed Greens', 'Couscous'],
+            portions: ['Regular', 'Large'],
+            addons: [{ id: 'a4', name: 'Grilled Tofu', price: 50 }, { id: 'a5', name: 'Extra Dressing', price: 10 }]
+        }
+    },
+    {
+        id: 'm_sub4', kitchenId: 's4', name: 'South Indian Tiffin', description: 'Idli/Dosa rotation with sambar and chutney', price: 99, image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500&fit=crop&q=60', type: 'Breakfast', isVegetarian: true, isSubscription: true,
+        customizationOptions: {
+            bases: ['Idli focus', 'Dosa focus'],
+            portions: ['Regular', 'Large'],
+            addons: [{ id: 'a6', name: 'Extra Podi', price: 15 }, { id: 'a7', name: 'Filter Coffee', price: 40 }]
+        }
+    },
+    {
+        id: 'm_sub5', kitchenId: 's5', name: 'Daily Bakery Box', description: 'Freshly baked pastries delivered every morning', price: 179, image: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&fit=crop&q=60', type: 'Breakfast', isVegetarian: true, isSubscription: true,
+        customizationOptions: {
+            bases: ['Croissant', 'Muffin', 'Bagel'],
+            portions: ['Regular', 'Large (2 items)'],
+            addons: [{ id: 'a8', name: 'Cream Cheese', price: 25 }, { id: 'a9', name: 'Orange Juice', price: 60 }]
+        }
+    },
+    {
+        id: 'm_sub7', kitchenId: 's7', name: 'Protein Power Meal', description: 'High-protein balanced meal for fitness goals', price: 249, image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&fit=crop&q=60', type: 'Lunch', isVegetarian: false, isSubscription: true,
+        customizationOptions: {
+            bases: ['Cauliflower Rice', 'Brown Rice', 'Sweet Potato'],
+            portions: ['Regular', 'Large (+20g Protein)'],
+            addons: [{ id: 'a10', name: 'Extra Chicken Breast', price: 80 }, { id: 'a11', name: 'Boiled Eggs (2)', price: 30 }]
+        }
+    },
 ];
 
 // ─── Helper: get all meals for a given kitchen ─────────────────────────────────
@@ -178,4 +234,30 @@ export const MOCK_ORDERS: Order[] = [
         createdAt: new Date().toISOString(),
         deliveryAddressId: 'a2',
     },
+];
+
+// ─── Mock Subscriptions ────────────────────────────────────────────────────────
+export const MOCK_SUBSCRIPTIONS: import('../models/types').Subscription[] = [
+    {
+        id: 'sub1',
+        userId: 'u1',
+        planId: 'weekly',
+        startDate: new Date(Date.now() - 86400000 * 3).toISOString(), // 3 days ago
+        endDate: new Date(Date.now() + 86400000 * 4).toISOString(), // 4 days from now
+        status: 'active',
+        preferences: {
+            spiceLevel: 'Medium',
+            oilLevel: 'Standard',
+            dietType: 'Veg',
+        },
+        customization: {
+            base: 'Brown Rice',
+            portion: 'Regular',
+            addons: [],
+            instructions: '',
+        },
+        schedule: {
+            afternoon: 'a2', // Office
+        }
+    }
 ];

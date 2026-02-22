@@ -13,6 +13,12 @@ interface SubscriptionState {
         oilLevel: string;
         dietType: string;
     };
+    customization: {
+        base: string;
+        portion: string;
+        addons: string[];
+        instructions: string;
+    };
     activeSubscription: any | null; // Store the confirmed subscription
 }
 
@@ -22,8 +28,11 @@ interface SubscriptionContextType {
     toggleMealType: (type: string) => void;
     setSchedule: (slot: 'morning' | 'afternoon' | 'night', addressId: string) => void;
     setPreference: (key: keyof SubscriptionState['preferences'], value: string) => void;
+    setCustomization: (customization: Partial<SubscriptionState['customization']>) => void;
     completeSubscription: () => void;
     resetSubscription: () => void;
+    toggleActiveSubscriptionStatus: () => void;
+    updateActiveSubscriptionAddons: (addons: string[]) => void;
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
@@ -34,6 +43,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         mealTypes: [],
         schedule: { morning: null, afternoon: null, night: null },
         preferences: { spiceLevel: 'Medium', oilLevel: 'Standard', dietType: 'Veg' },
+        customization: { base: '', portion: '', addons: [], instructions: '' },
         activeSubscription: null,
     };
 
@@ -67,6 +77,13 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         }));
     };
 
+    const setCustomization = (customization: Partial<SubscriptionState['customization']>) => {
+        setState(prev => ({
+            ...prev,
+            customization: { ...prev.customization, ...customization }
+        }));
+    };
+
     const completeSubscription = () => {
         setState(prev => ({
             ...prev,
@@ -75,6 +92,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
                 mealTypes: prev.mealTypes,
                 schedule: prev.schedule,
                 preferences: prev.preferences,
+                customization: prev.customization,
                 startDate: new Date().toISOString(),
                 status: 'active'
             },
@@ -82,14 +100,44 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
             planId: null,
             mealTypes: [],
             schedule: { morning: null, afternoon: null, night: null },
-            preferences: { spiceLevel: 'Medium', oilLevel: 'Standard', dietType: 'Veg' }
+            preferences: { spiceLevel: 'Medium', oilLevel: 'Standard', dietType: 'Veg' },
+            customization: { base: '', portion: '', addons: [], instructions: '' }
         }));
     };
 
     const resetSubscription = () => setState(initialState);
 
+    const toggleActiveSubscriptionStatus = () => {
+        setState(prev => {
+            if (!prev.activeSubscription) return prev;
+            return {
+                ...prev,
+                activeSubscription: {
+                    ...prev.activeSubscription,
+                    status: prev.activeSubscription.status === 'active' ? 'paused' : 'active'
+                }
+            };
+        });
+    };
+
+    const updateActiveSubscriptionAddons = (addons: string[]) => {
+        setState(prev => {
+            if (!prev.activeSubscription) return prev;
+            return {
+                ...prev,
+                activeSubscription: {
+                    ...prev.activeSubscription,
+                    customization: {
+                        ...prev.activeSubscription.customization,
+                        addons
+                    }
+                }
+            };
+        });
+    };
+
     return (
-        <SubscriptionContext.Provider value={{ state, setPlan, toggleMealType, setSchedule, setPreference, completeSubscription, resetSubscription }}>
+        <SubscriptionContext.Provider value={{ state, setPlan, toggleMealType, setSchedule, setPreference, setCustomization, completeSubscription, resetSubscription, toggleActiveSubscriptionStatus, updateActiveSubscriptionAddons }}>
             {children}
         </SubscriptionContext.Provider>
     );

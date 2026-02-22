@@ -11,7 +11,10 @@ export default function SellerLayout() {
     // Protect this route: if not seller mode, kick them back
     useEffect(() => {
         if (!isSellerMode) {
-            router.replace('/(tabs)/account');
+            // Need a tiny timeout to avoid the "Attempted to navigate before mounting the Root Layout component" error on web/new arch
+            setTimeout(() => {
+                router.replace('/(tabs)/account');
+            }, 0);
         }
     }, [isSellerMode]);
 

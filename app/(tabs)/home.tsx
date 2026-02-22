@@ -10,14 +10,14 @@ import { MOCK_USER } from '../../src/services/mockData';
 
 export default function HomeScreen() {
     const router = useRouter();
-    const currentAddress = MOCK_USER.addresses[0];
+    const currentAddress = MOCK_USER?.addresses?.[0] || { label: 'Location', fullAddress: 'Loading...' };
     const { width } = useWindowDimensions();
     const isDesktop = width > 768;
 
     const renderHeader = () => (
         <View>
             <LinearGradient
-                colors={['#6100FF', '#9E00FF']} // Swiggy-like vibrant purple gradient
+                colors={[Colors.primary, Colors.primaryLight]} // Match logo background seamlessly
                 style={styles.heroHeader}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -48,7 +48,7 @@ export default function HomeScreen() {
                         </TouchableOpacity>
 
                         <View style={styles.centerSectionAbsolute} pointerEvents="none">
-                            <Text style={styles.headerAppName}>Meal Mate</Text>
+                            <Image source={require('../../assets/logo.png')} style={{ width: 100, height: 40 }} resizeMode="contain" />
                         </View>
 
                         <TouchableOpacity style={styles.profileBtn} onPress={() => router.push('/(tabs)/account')}>

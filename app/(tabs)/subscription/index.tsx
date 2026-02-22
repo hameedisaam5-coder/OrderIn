@@ -106,8 +106,8 @@ export default function SubscriptionScreen() {
                     <View style={styles.divider} />
                     <View style={styles.row}>
                         <Text style={styles.label}>Status</Text>
-                        <View style={styles.statusBadge}>
-                            <Text style={styles.statusText}>ACTIVE</Text>
+                        <View style={[styles.statusBadge, { backgroundColor: activeSubscription.status === 'active' ? Colors.success : Colors.warning }]}>
+                            <Text style={styles.statusText}>{activeSubscription.status.toUpperCase()}</Text>
                         </View>
                     </View>
                     <View style={styles.divider} />
@@ -135,7 +135,7 @@ export default function SubscriptionScreen() {
                 <Button
                     title="Manage Subscription"
                     variant="outline"
-                    onPress={() => { }} // Placeholder for now
+                    onPress={() => router.push('/subscription/manage')}
                     style={{ marginTop: 20 }}
                 />
             </ScrollView>

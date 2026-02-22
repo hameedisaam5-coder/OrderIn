@@ -14,9 +14,7 @@ export default function WelcomeScreen() {
 
             <View style={styles.content}>
                 <View style={styles.header}>
-                    <View style={styles.logoCircle}>
-                        <Text style={styles.logoText}>O</Text>
-                    </View>
+                    <Image source={require('../../assets/logo.png')} style={styles.logoImage} resizeMode="contain" />
                     <Text style={styles.title}>Meal Mate</Text>
                     <Text style={styles.subtitle}>Daily Meals. On Schedule.</Text>
                 </View>
@@ -61,19 +59,10 @@ const styles = StyleSheet.create({
     header: {
         alignItems: 'center',
     },
-    logoCircle: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        backgroundColor: Colors.primary,
-        alignItems: 'center',
-        justifyContent: 'center',
+    logoImage: {
+        width: 120,
+        height: 120,
         marginBottom: Layout.spacing.md,
-    },
-    logoText: {
-        fontSize: 40,
-        color: Colors.white,
-        fontWeight: 'bold',
     },
     title: {
         fontSize: 32,

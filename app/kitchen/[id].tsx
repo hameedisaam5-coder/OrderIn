@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
-import { ChevronLeft, Clock } from 'lucide-react-native';
+import { ChevronLeft, Clock, BadgeCheck } from 'lucide-react-native';
 import Colors from '../../src/constants/Colors';
 import Layout from '../../src/constants/Layout';
 import MealCard from '../../src/components/MealCard';
@@ -51,7 +51,10 @@ export default function KitchenDetailsScreen() {
 
                 {/* Info Section */}
                 <View style={styles.infoContainer}>
-                    <Text style={styles.name}>{kitchen.name}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                        <Text style={[styles.name, { marginBottom: 0 }]}>{kitchen.name}</Text>
+                        {kitchen.verified && <BadgeCheck size={24} color="white" fill={Colors.verified} style={{ marginLeft: 6 }} />}
+                    </View>
                     <Text style={styles.cuisine}>{kitchen.cuisine.join(' • ')}</Text>
 
                     <View style={styles.statsRow}>

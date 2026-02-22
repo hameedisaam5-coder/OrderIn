@@ -29,6 +29,7 @@ export interface Meal {
     isVegetarian: boolean;
     calories?: number;
     isSubscription?: boolean;
+    customizationOptions?: MealCustomizationOptions;
 }
 
 export interface Kitchen {
@@ -51,6 +52,18 @@ export interface SubscriptionPlan {
     description: string;
 }
 
+export interface SubscriptionAddon {
+    id: string;
+    name: string;
+    price: number;
+}
+
+export interface MealCustomizationOptions {
+    bases: string[]; // e.g., ["Brown Rice", "White Rice", "Roti", "Chapati"]
+    portions: string[]; // e.g., ["Regular", "Large", "Slim"]
+    addons: SubscriptionAddon[];
+}
+
 export interface Subscription {
     id: string;
     userId: string;
@@ -62,6 +75,12 @@ export interface Subscription {
         spiceLevel: 'Low' | 'Medium' | 'High';
         oilLevel: 'Low' | 'Medium' | 'Standard';
         dietType: 'Veg' | 'Non-Veg' | 'Egg' | 'Vegan';
+    };
+    customization?: {
+        base: string;
+        portion: string;
+        addons: string[]; // array of Addon IDs
+        instructions: string;
     };
     schedule: {
         morning?: string; // Address ID

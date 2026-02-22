@@ -20,7 +20,7 @@ export default function MealsScreen() {
     const { state, toggleMealType } = useSubscription();
 
     const handleContinue = () => {
-        router.push('/subscription/schedule');
+        router.push('/subscription/customize');
     };
 
     return (

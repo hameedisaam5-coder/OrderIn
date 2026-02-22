@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Star, Clock, CheckCircle } from 'lucide-react-native';
+import { Star, Clock, BadgeCheck } from 'lucide-react-native';
 import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
 import { Kitchen } from '../models/types';
@@ -17,7 +17,7 @@ export default function KitchenCard({ kitchen, onPress }: KitchenCardProps) {
             <View style={styles.content}>
                 <View style={styles.header}>
                     <Text style={styles.name}>{kitchen.name}</Text>
-                    {kitchen.verified && <CheckCircle size={16} color="white" fill={Colors.verified} style={{ marginLeft: 4 }} />}
+                    {kitchen.verified && <BadgeCheck size={18} color="white" fill={Colors.verified} style={{ marginLeft: 4 }} />}
                 </View>
 
                 <Text style={styles.cuisine}>{kitchen.cuisine.join(', ')}</Text>
