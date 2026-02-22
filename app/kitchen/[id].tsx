@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Star, Clock, ChevronLeft, Share2 } from 'lucide-react-native';
+import { ChevronLeft, Clock } from 'lucide-react-native';
 import Colors from '../../src/constants/Colors';
 import Layout from '../../src/constants/Layout';
 import MealCard from '../../src/components/MealCard';
@@ -12,7 +11,7 @@ import { useCart } from '../../src/context/CartContext';
 export default function KitchenDetailsScreen() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
-    const { addToCart, totalItems, totalAmount } = useCart();
+    const { addToCart, removeFromCart, items, totalItems, totalAmount } = useCart();
 
     const [activeTab, setActiveTab] = useState<'regular' | 'subscription'>('regular');
 
@@ -32,11 +31,16 @@ export default function KitchenDetailsScreen() {
         ? mockMenuWithSub.filter(m => !m.isSubscription)
         : mockMenuWithSub.filter(m => m.isSubscription);
 
+    const getQuantity = (mealId: string) => {
+        const item = items.find(i => i.meal.id === mealId);
+        return item ? item.quantity : 0;
+    };
+
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ headerShown: false }} />
 
-            <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+            <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
                 {/* Header Image */}
                 <View>
                     <Image source={{ uri: kitchen.imageUrl }} style={styles.coverImage} />
@@ -48,19 +52,17 @@ export default function KitchenDetailsScreen() {
                 {/* Info Section */}
                 <View style={styles.infoContainer}>
                     <Text style={styles.name}>{kitchen.name}</Text>
-                    <Text style={styles.cuisine}>{kitchen.cuisine.join(', ')}</Text>
+                    <Text style={styles.cuisine}>{kitchen.cuisine.join(' • ')}</Text>
 
                     <View style={styles.statsRow}>
-                        <View style={styles.stat}>
-                            <View style={[styles.badge, { backgroundColor: Colors.success }]}>
-                                <Text style={[styles.badgeText, { color: Colors.white }]}>{kitchen.rating} ★</Text>
-                            </View>
-                            <Text style={styles.statLabel}>Rating</Text>
+                        <View style={[styles.ratingBadge]}>
+                            <Text style={styles.ratingText}>{kitchen.rating} ★</Text>
                         </View>
-                        <View style={styles.stat}>
-                            <Text style={styles.statValue}>{kitchen.deliveryTime}</Text>
-                            <Text style={styles.statLabel}>Delivery</Text>
-                        </View>
+                        <View style={styles.statDivider} />
+                        <Clock size={14} color={Colors.textSecondary} />
+                        <Text style={styles.statText}>{kitchen.deliveryTime}</Text>
+                        <View style={styles.statDivider} />
+                        <Text style={styles.statText}>₹30 delivery</Text>
                     </View>
                 </View>
 
@@ -75,7 +77,7 @@ export default function KitchenDetailsScreen() {
                             onPress={() => setActiveTab('regular')}
                         >
                             <Text style={[styles.tabText, activeTab === 'regular' && styles.activeTabText]}>
-                                A-la-carte ({mockMenuWithSub.filter(m => !m.isSubscription).length})
+                                À la carte ({mockMenuWithSub.filter(m => !m.isSubscription).length})
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -98,7 +100,9 @@ export default function KitchenDetailsScreen() {
                         <MealCard
                             key={meal.id}
                             meal={meal}
+                            quantity={getQuantity(meal.id)}
                             onAdd={() => addToCart(meal, kitchen.id)}
+                            onRemove={() => removeFromCart(meal.id)}
                         />
                     ))}
                 </View>
@@ -115,7 +119,7 @@ export default function KitchenDetailsScreen() {
                             <Text style={styles.cartItemsText}>{totalItems} ITEMS</Text>
                             <Text style={styles.cartTotalText}>₹{totalAmount} plus taxes</Text>
                         </View>
-                        <Text style={styles.viewCartText}>View Cart</Text>
+                        <Text style={styles.viewCartText}>View Cart →</Text>
                     </TouchableOpacity>
                 </View>
             )}
@@ -163,31 +167,29 @@ const styles = StyleSheet.create({
     },
     statsRow: {
         flexDirection: 'row',
-        gap: Layout.spacing.xl,
-    },
-    stat: {
-        flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
+        marginTop: 8,
     },
-    badge: {
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: 4,
+    ratingBadge: {
+        backgroundColor: Colors.success,
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+        borderRadius: 6,
     },
-    badgeText: {
+    ratingText: {
+        color: 'white',
         fontWeight: 'bold',
-        fontSize: 14,
+        fontSize: 13,
     },
-    statValue: {
-        fontWeight: 'bold',
-        fontSize: 14,
-        color: Colors.textPrimary,
+    statDivider: {
+        width: 1,
+        height: 14,
+        backgroundColor: Colors.border,
     },
-    statLabel: {
-        fontSize: 12,
+    statText: {
+        fontSize: 13,
         color: Colors.textSecondary,
-        marginLeft: 4,
     },
     divider: {
         height: 1,

@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../src/constants/Colors';
 import Layout from '../../src/constants/Layout';
 import { LinearGradient } from 'expo-linear-gradient';
-import { TrendingUp, Package, Clock, Bell, ChevronRight } from 'lucide-react-native';
+import { TrendingUp, Package, Clock, Bell, ChevronRight, ShieldCheck, X, CheckCircle } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 // Import orders if we want to show real data, for now we will use derived mock stats
 import { useOrders } from '../../src/context/OrderContext';
 
 export default function SellerDashboardScreen() {
     const [isOnline, setIsOnline] = useState(true);
+    const [showVerificationModal, setShowVerificationModal] = useState(false);
     const router = useRouter();
     const { orders } = useOrders();
 
@@ -47,6 +48,25 @@ export default function SellerDashboardScreen() {
             </LinearGradient>
 
             <ScrollView contentContainerStyle={styles.content} bounces={false}>
+
+                {/* Verification Opt-in Banner */}
+                <TouchableOpacity
+                    style={styles.verificationBanner}
+                    onPress={() => setShowVerificationModal(true)}
+                >
+                    <LinearGradient
+                        colors={['#FFF7ED', '#FFEDD5']}
+                        style={[StyleSheet.absoluteFillObject, { borderRadius: Layout.borderRadius.lg }]}
+                    />
+                    <View style={styles.verificationIconBg}>
+                        <ShieldCheck size={24} color={Colors.warning} />
+                    </View>
+                    <View style={styles.verificationTextContainer}>
+                        <Text style={styles.verificationTitle}>Opt in for verification badge</Text>
+                        <Text style={styles.verificationDesc}>Build trust and get more orders.</Text>
+                    </View>
+                    <ChevronRight size={20} color={Colors.warning} />
+                </TouchableOpacity>
 
                 {/* Pending Actions Alert */}
                 {newOrders > 0 && isOnline && (
@@ -112,6 +132,59 @@ export default function SellerDashboardScreen() {
                 </View>
 
             </ScrollView>
+
+            {/* Verification Modal */}
+            <Modal
+                visible={showVerificationModal}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setShowVerificationModal(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                            onPress={() => setShowVerificationModal(false)}
+                        >
+                            <X size={24} color={Colors.textSecondary} />
+                        </TouchableOpacity>
+
+                        <View style={styles.modalHeaderIcon}>
+                            <ShieldCheck size={48} color={Colors.warning} />
+                        </View>
+
+                        <Text style={styles.modalTitle}>Get Verified To Boost Sales</Text>
+                        <Text style={styles.modalSubtitle}>
+                            A hygiene verification badge on your restaurant profile significantly increases customer trust and order volume.
+                        </Text>
+
+                        <View style={styles.stepsContainer}>
+                            <View style={styles.stepRow}>
+                                <CheckCircle size={20} color={Colors.success} />
+                                <Text style={styles.stepText}>A representative will visit your kitchen to verify hygiene standards.</Text>
+                            </View>
+                            <View style={styles.stepRow}>
+                                <CheckCircle size={20} color={Colors.success} />
+                                <Text style={styles.stepText}>Upon successful check, your profile gets a verified badge.</Text>
+                            </View>
+                            <View style={styles.stepRow}>
+                                <CheckCircle size={20} color={Colors.success} />
+                                <Text style={styles.stepText}>A one-time small verification fee applies upon approval.</Text>
+                            </View>
+                        </View>
+
+                        <TouchableOpacity
+                            style={styles.btnPrimary}
+                            onPress={() => {
+                                // Close and log/handle request logic
+                                setShowVerificationModal(false);
+                            }}
+                        >
+                            <Text style={styles.btnPrimaryText}>Request Verification Check</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -155,6 +228,38 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: Layout.spacing.lg,
+    },
+    verificationBanner: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: Layout.spacing.md,
+        borderRadius: Layout.borderRadius.lg,
+        marginBottom: Layout.spacing.lg,
+        borderColor: '#FED7AA',
+        borderWidth: 1,
+        overflow: 'hidden', // to keep gradient inside
+    },
+    verificationIconBg: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        backgroundColor: '#FFEDD5',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: Layout.spacing.md,
+    },
+    verificationTextContainer: {
+        flex: 1,
+    },
+    verificationTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#9A3412', // Dark orange text
+        marginBottom: 2,
+    },
+    verificationDesc: {
+        fontSize: 13,
+        color: '#C2410C',
     },
     alertCard: {
         backgroundColor: '#FFF1F2',
@@ -245,4 +350,79 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    // Modal Styles
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'flex-end',
+    },
+    modalContent: {
+        backgroundColor: Colors.surface,
+        borderTopLeftRadius: Layout.borderRadius.xl,
+        borderTopRightRadius: Layout.borderRadius.xl,
+        padding: Layout.spacing.xl,
+        paddingBottom: Layout.spacing.xxl,
+    },
+    closeButton: {
+        position: 'absolute',
+        top: Layout.spacing.md,
+        right: Layout.spacing.md,
+        padding: Layout.spacing.sm,
+        zIndex: 10,
+    },
+    modalHeaderIcon: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: '#FFF7ED',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        marginBottom: Layout.spacing.lg,
+        marginTop: Layout.spacing.sm,
+    },
+    modalTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: Colors.textPrimary,
+        textAlign: 'center',
+        marginBottom: Layout.spacing.sm,
+    },
+    modalSubtitle: {
+        fontSize: 15,
+        color: Colors.textSecondary,
+        textAlign: 'center',
+        lineHeight: 22,
+        marginBottom: Layout.spacing.xl,
+    },
+    stepsContainer: {
+        backgroundColor: Colors.background,
+        padding: Layout.spacing.lg,
+        borderRadius: Layout.borderRadius.lg,
+        marginBottom: Layout.spacing.xl,
+        gap: Layout.spacing.md,
+    },
+    stepRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Layout.spacing.md,
+    },
+    stepText: {
+        flex: 1,
+        fontSize: 14,
+        color: Colors.textPrimary,
+        lineHeight: 20,
+    },
+    btnPrimary: {
+        backgroundColor: Colors.warning,
+        paddingVertical: 16,
+        borderRadius: Layout.borderRadius.lg,
+        alignItems: 'center',
+    },
+    btnPrimaryText: {
+        color: Colors.white,
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 });
+
